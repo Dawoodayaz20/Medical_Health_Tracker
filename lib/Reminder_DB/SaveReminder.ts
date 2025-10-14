@@ -10,7 +10,7 @@ export async function saveReminder (title: string, description: string, time: st
         await databases.createDocument(
         process.env.EXPO_PUBLIC_APPWRITE_DOC_ID!,
         "reminders",
-        ID.unique(),
+         ID.unique(),
         {
             userID: userId,
             title,
@@ -29,24 +29,24 @@ export async function saveReminder (title: string, description: string, time: st
     }
 }
 
-export async function getNotes(): Promise<Note[] | null> {
+export async function getReminders(): Promise<Reminder[] | null> {
     try{
         const userID = await getAccountID()
         if (!userID) {
             console.log("The user must be logged in!")
             }
 
-        const response = await databases.listDocuments(
-                process.env.EXPO_PUBLIC_APPWRITE_DOC_ID!,
-                "medical_notes",
-                [Query.equal("userId", userID)]
-            );
+        const response = await databases.listDocuments({
+            databaseId: process.env.EXPO_PUBLIC_APPWRITE_DOC_ID!,
+            collectionId: "reminders",
+            queries: [Query.equal("userID", userID)]
+        });
             return response.documents.map((doc: any) => ({
-                id: doc.$id,
-                userId: doc.userId,
+                userID: doc.userID,
                 title: doc.title,
-                date: doc.date,
-                med_note: doc.med_note
+                description: doc.description,
+                time: doc.time,
+                date: doc.date
             }));
         }
     catch(err){
