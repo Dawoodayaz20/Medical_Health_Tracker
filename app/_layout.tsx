@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import ProfileContextProvider from "../lib/ProfileData_DB/profileContext";
 import NotesProvider from "./(Records)/notesContext";
 import RemindersContextProvider from "./(reminders)/remindersContext";
+import MedicineContextProvider from "./(Medicines)/medicinalContext";
 import './globals.css';
 
 function RouteGuard({children} : { children: React.ReactNode }){
@@ -31,15 +32,18 @@ export default function RootLayout() {
             <AuthProvider>
             <ProfileContextProvider>
             <NotesProvider>
-            <RemindersContextProvider>  
+            <RemindersContextProvider> 
+            <MedicineContextProvider>
             <RouteGuard>
               <Stack>
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }}/>
                 <Stack.Screen name="(reminders)" options={{ headerShown: false }}/>
                 <Stack.Screen name="(Records)" options={{ headerShown: true, title:'' }}/>
+                <Stack.Screen name="(Medicines)" options={{ headerShown: false }}/>
                 <Stack.Screen name="(Assistant)" options={{ headerShown:false }}/>
               </Stack>
             </RouteGuard>
+            </MedicineContextProvider>
             </RemindersContextProvider>
             </NotesProvider>
             </ProfileContextProvider>

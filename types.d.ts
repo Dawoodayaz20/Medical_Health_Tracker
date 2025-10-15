@@ -20,3 +20,12 @@ type Reminder = {
     time: number, 
     date: number
 }
+
+type Medicines = {
+    id: string,
+    userID: string,
+    name: string,
+    illness: string,
+    dosage: string,
+    notes: string
+}

@@ -76,7 +76,7 @@ export default function Index() {
     
     <View
       style={styles.view}>
-        <Link href="/auth"><Text variant="labelLarge">Medicines</Text></Link>
+        <Link href="/(Medicines)/MedicinesPage"><Text variant="labelLarge">Medicines</Text></Link>
           <Image 
             source={medicines}
             style={[styles.icons, {resizeMode: 'contain'}]} />
