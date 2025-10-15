@@ -10,11 +10,9 @@ export default function AddReminder () {
     const { reminder, setReminder } = useContext(RemindersContext);
     const params = useLocalSearchParams();
     const [title, setTitle] = useState<any>(params.title || "")
-    const [time, setTime] = useState<any>(params.title || "")
-    const [description, setDescription] = useState<any>(params.title || "")
+    const [time, setTime] = useState<any>(params.time || "")
+    const [description, setDescription] = useState<any>(params.description || "")
     const router = useRouter();
-
-    const showState = () => console.log(description, time)
 
     return (
         <View className="flex-1 bg-white px-5 pt-12">
@@ -48,7 +46,7 @@ export default function AddReminder () {
             value={time}
             onChangeText={setTime}
           />
-        </View>
+      </View>
 
         <View>
           <Text className="text-gray-600 mb-1 font-medium">Notes</Text>
@@ -66,7 +64,8 @@ export default function AddReminder () {
         <View className="items-center">
             <Button 
             mode="contained"
-            onPress={(() => saveReminder(title, time, description))}
+            onPressIn={(() => saveReminder(title, time, description))}
+            onPress={(() => router.back())}
             className="bg-blue-500 text-center py-3 rounded-2xl mt-8 w-40">
                 <Text className="text-white text-center text-base font-semibold">
                 Save Reminder

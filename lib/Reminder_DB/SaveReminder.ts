@@ -2,8 +2,7 @@ import { ID } from "appwrite"
 import { account, databases, getAccountID } from "../appwrite"
 import { Query } from "appwrite";
 
-export async function saveReminder (title: string, description: string, time: string) {
-
+export async function saveReminder (title: string, time: string, description: string) {
     const userId = await getAccountID()
 
     try{
@@ -14,8 +13,8 @@ export async function saveReminder (title: string, description: string, time: st
         {
             userID: userId,
             title,
-            description,
             time,
+            description
         },  
         [
         `read("user:${userId}")`,
@@ -42,11 +41,11 @@ export async function getReminders(): Promise<Reminder[] | null> {
             queries: [Query.equal("userID", userID)]
         });
             return response.documents.map((doc: any) => ({
+                id: doc.$id,
                 userID: doc.userID,
                 title: doc.title,
-                description: doc.description,
                 time: doc.time,
-                date: doc.date
+                description: doc.description,
             }));
         }
     catch(err){

@@ -2,16 +2,13 @@ import { useContext, useEffect, useState } from "react"
 import { Text, Button } from "react-native-paper"
 import { View, StyleSheet, TouchableOpacity, ScrollView } from "react-native"
 import { RemindersContext } from "./remindersContext"
-import { Plus, ArrowLeft, Trash2 } from "lucide-react-native"
+import { Plus, ArrowLeft, Trash2, Pencil } from "lucide-react-native"
 import { useRouter } from "expo-router"
 import { getReminders } from "@/lib/Reminder_DB/SaveReminder"
+import { DeleteReminder } from "@/lib/Reminder_DB/fetchReminder"
 
 export default function Reminders() {
     const { reminder, setReminder } = useContext(RemindersContext)
-    // const reminder = [
-    // { userID: 1, title: "Reminder 1", time: "8:00 AM" },
-    // { userID: 2, title: "Reminder 2", time: "10:30 AM" },
-    // ]
     const router = useRouter()
 
     useEffect(() => {
@@ -44,14 +41,27 @@ export default function Reminders() {
       <ScrollView showsVerticalScrollIndicator={false} className="mt-10">
         {reminder.map((item) => (
           <View
-            key={item.userID}
+            key={item.id}
             className="flex-row justify-between items-center bg-gray-50 px-4 py-3 mb-3 rounded-2xl shadow-sm"
           >
             <Text className="text-base font-semibold text-gray-800">
               {item.title}
             </Text>
             <Text className="text-sm text-gray-500">{item.time}</Text>
-            <Trash2 />
+            <TouchableOpacity onPress={() =>
+                    router.push({pathname:'./AddReminder',
+                        params:{
+                            id: item.id,
+                            title: item.title,
+                            time: item.time,
+                            description: item.description
+                        },
+                    })}>
+            <Pencil />
+            </TouchableOpacity>
+            <TouchableOpacity>
+            <Trash2 onPress={(() => DeleteReminder(item.id))}/>
+            </TouchableOpacity>
           </View>
         ))}
       </ScrollView>

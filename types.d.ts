@@ -14,11 +14,11 @@ type Profile = {
 }
 
 type Reminder = {
+    id: string,
     userID: string,
     title: string,
-    description: string,
     time: number, 
-    date: number
+    description: string
 }
 
 type Medicines = {
