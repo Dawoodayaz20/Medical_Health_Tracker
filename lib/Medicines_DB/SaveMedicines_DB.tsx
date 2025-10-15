@@ -1,7 +1,7 @@
 import { ID } from "appwrite"
 import { databases, getAccountID } from "../appwrite"
 
-export async function SaveMedicines (name: string, illness: string, dosage: string, time: string, notes: string) {
+export async function SaveMedicines (name: string, illness: string, dosage: string, time: string, detail: string) {
 
     const userId = await getAccountID()
 
@@ -12,10 +12,11 @@ export async function SaveMedicines (name: string, illness: string, dosage: stri
          ID.unique(),
         {
             userID: userId,
-            name,
-            illness,
-            dosage,
-            time
+            name: name,
+            illness: illness,
+            dosage: dosage,
+            time: time,
+            detail: detail
         },  
         [
         `read("user:${userId}")`,
@@ -28,3 +29,4 @@ export async function SaveMedicines (name: string, illness: string, dosage: stri
         console.log("There was an error saving the Medicinal information:", error)
     }
 }
+

@@ -1,19 +1,13 @@
 import React, { useContext, useEffect } from "react";
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
-import { Plus, ArrowLeft } from "lucide-react-native";
+import { Plus, ArrowLeft, Trash2 } from "lucide-react-native";
 import { useRouter } from "expo-router";
 import { MedicineContext } from "./medicinalContext";
-import { fetchMedicines } from "@/lib/Medicines_DB/fetchMedicines_DB";
+import { fetchMedicines, DeleteMedicine } from "@/lib/Medicines_DB/fetchMedicines_DB";
 
 export default function MedicinesPage() {
     const router = useRouter();
     const { medicine, setMedicine } = useContext(MedicineContext);
-
-//   const medicines = [
-//     { id: 1, name: "Paracetamol", illness: "Fever" },
-//     { id: 2, name: "Amoxicillin", illness: "Infection" },
-//     { id: 3, name: "Ibuprofen", illness: "Headache" },
-//   ];
 
     useEffect(() => {
         const fetchMedicine = async() => {
@@ -46,20 +40,24 @@ export default function MedicinesPage() {
         data={medicine}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity
+        <TouchableOpacity
             activeOpacity={0.7}
             className="bg-white rounded-xl p-4 mb-4 shadow-sm border border-gray-200"
-          >
-            <Text className="text-lg font-semibold text-gray-800">
-              {item.name}
-            </Text>
-            <Text className="text-lg font-semibold text-gray-800">
-              {item.illness}
-            </Text>
+            >
+            <View className="flex-row justify-between items-start">
+            <View>
+            <Text className="text-lg font-semibold text-gray-800">{item.name}</Text>
+            <Text className="text-sm text-gray-500 mt-1">For: {item.illness}</Text>
             <Text className="text-sm text-gray-500 mt-1">
-              For: {item.dosage}
+                 Dosage: {item.dosage}
             </Text>
-          </TouchableOpacity>
+            <Text className="text-sm text-gray-500 mt-1">{item.detail}</Text>
+            </View>
+            <TouchableOpacity>
+            <Trash2 onPress={(() => DeleteMedicine(item.id))} size={20} color="#ef4444" /> 
+            </TouchableOpacity>
+            </View>
+        </TouchableOpacity>
         )}
       />
     </View>

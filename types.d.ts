@@ -27,5 +27,5 @@ type Medicines = {
     name: string,
     illness: string,
     dosage: string,
-    notes: string
+    detail: string
 }

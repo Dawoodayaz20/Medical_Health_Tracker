@@ -10,7 +10,7 @@ export default function AddMedicine() {
   const [illness, setIllness] = useState("");
   const [dosage, setDosage] = useState("");
   const [time, setTime] = useState("");
-  const [ notes, setNotes] = useState("");
+  const [ detail, setDetail] = useState("");
 
 //   const saveMedicine = async () => {
 //     if (!medicine.trim() || !illness.trim()) {
@@ -63,14 +63,14 @@ export default function AddMedicine() {
         
         <TextInput
           placeholder="Notes (optional)"
-          value={notes}
-          onChangeText={setNotes}
+          value={detail}
+          onChangeText={setDetail}
           className="bg-white p-4 rounded-xl border border-gray-200 text-gray-800"
         />
       </View>
 
       <TouchableOpacity
-        onPressIn={(() => SaveMedicines(name, illness, dosage, time, notes))}
+        onPressIn={(() => SaveMedicines(name, illness, dosage, time, detail))}
         onPress={(() => router.back())}
         className="bg-blue-600 p-4 rounded-xl mt-8 shadow-md"
       >

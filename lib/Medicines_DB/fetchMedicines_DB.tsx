@@ -18,14 +18,27 @@ export async function fetchMedicines(): Promise<Medicines[] | null> {
                 id: doc.$id,
                 userID: doc.userID,
                 name: doc.name,
-                dosage: doc.dosage,
                 illness: doc.illness,
+                dosage: doc.dosage,
                 time: doc.time,
-                notes: doc.notes
+                detail: doc.detail
             }));
         }
     catch(err){
         console.log("Error fetching Notes Data", err)
         return null;
+    }
+}
+
+export async function DeleteMedicine(documentId: string) {
+    try {
+        await databases.deleteDocument(
+            process.env.EXPO_PUBLIC_APPWRITE_DOC_ID!,
+            "medicines",
+            documentId
+        );
+        console.log("Medicine deleted successfully!");
+    } catch (error) {
+        console.log("Error deleting medicine:", error);
     }
 }
