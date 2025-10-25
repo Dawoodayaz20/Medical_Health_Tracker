@@ -5,6 +5,7 @@ import React, { useContext, useState } from "react";
 import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Button } from "react-native-paper";
 import { ProfileContext } from "../../lib/ProfileData_DB/profileContext";
+import '../globals.css'
 
 export default function LoginScreen() {
     const {signOut} = useAuth();
