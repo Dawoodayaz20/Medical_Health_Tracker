@@ -1,11 +1,10 @@
-import React, { useContext, useEffect } from "react";
-import { Button, Text, TextInput } from "react-native-paper";
-import { View, FlatList, TouchableOpacity } from "react-native";
-import { NotesContext } from "./notesContext";
-import { useRouter } from "expo-router";
 import { getNotes } from "@/lib/appwrite_queries";
-import { ID } from "appwrite";
-import { getAccountID } from "@/lib/appwrite";
+import { useRouter } from "expo-router";
+import { Pencil, Trash2 } from "lucide-react-native";
+import React, { useContext, useEffect } from "react";
+import { FlatList, TouchableOpacity, View } from "react-native";
+import { Button, Text } from "react-native-paper";
+import { NotesContext } from "./notesContext";
 
 export default function NotesList() {
     const { notes, setNotes }  = useContext(NotesContext);
@@ -46,21 +45,10 @@ export default function NotesList() {
             keyExtractor={(note) => note.id}
             renderItem={({item: note}) => (
                 <TouchableOpacity 
-                activeOpacity={0.7} 
-                onPress={() =>
-                    router.push({pathname:'./AddNote',
-                        params:{
-                            id: note.userId,
-                            title: note.title,
-                            date: note.date,
-                            med_note: note.med_note
-                        },
-                    })}
+                activeOpacity={0.7}
                 >
-                <View className="bg-white rounded-xl shadow-md p-4 mb-4">
-                    {/* <Button onPress={() => deleteNote(note.id)} mode="contained" className=" bg-blue-600 rounded-full">
-                        Delete
-                    </Button> */}
+                <View className="bg-white rounded-xl shadow-md p-4 mb-4 flex-row">
+                    <View className="w-64">
                     <Text className="text-xs text-gray-400 mb-1">
                         {note.date}
                     </Text>
@@ -70,8 +58,24 @@ export default function NotesList() {
                     <Text className="text-gray-600 mt-1">
                         {note.med_note}
                     </Text>
+                    </View>
+                    <TouchableOpacity
+                    onPress={() =>
+                    router.push({pathname:'./AddNote',
+                        params:{
+                            id: note.userId,
+                            title: note.title,
+                            date: note.date,
+                            med_note: note.med_note
+                        },
+                    })}
+                    >
+                        <Pencil className="mr-4"/>
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                        <Trash2 className="ml-4"/>
+                    </TouchableOpacity>
                 </View>
-
                 </TouchableOpacity>
                 )}
                 ListEmptyComponent={<Text>No Notes Yet</Text>}

@@ -9,21 +9,36 @@ import {
 } from "react-native";
 import handleResponse from '../../lib/agentauth'
 
-export default function MedicalAssist() {
+export default function MedicalAssistant() {
   const [messages, setMessages] = useState<{ text: string; from: "user" | "bot" }[]>([]);
   const [text, setText] = useState<string>("");
 
   const handleSubmit = async () => {
     if (!text.trim()) return;
-    const reply = await handleResponse(text)
-    
+    try {
+    const reply = await handleResponse(text);
+
+    const botReply =
+      typeof reply === "object" && reply?.error
+        ? `Error: ${reply.error}`
+        : reply || "Sorry, I couldn't process your request. Please try again.";
+
     setMessages((prev) => [
       ...prev,
       { text, from: "user" },
-      { text: reply, from: "bot" }, // mock reply
+      { text: botReply, from: "bot" },
     ]);
-    setText("");
-  };
+  } catch (error) {
+    setMessages((prev) => [
+      ...prev,
+      { text, from: "user" },
+      { text: "An unexpected error occurred. Please try again later.", from: "bot" },
+    ]);
+  }
+
+  setText("");
+};
+
 
   return (
     <KeyboardAvoidingView
