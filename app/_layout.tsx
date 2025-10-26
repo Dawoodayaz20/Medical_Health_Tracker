@@ -30,11 +30,11 @@ function RouteGuard({children} : { children: React.ReactNode }){
 export default function RootLayout() {
   return (
             <AuthProvider>
+            <RouteGuard>
             <ProfileContextProvider>
             <NotesProvider>
             <RemindersContextProvider> 
             <MedicineContextProvider>
-            <RouteGuard>
               <Stack>
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }}/>
                 <Stack.Screen name="(reminders)" options={{ headerShown: false }}/>
@@ -42,11 +42,11 @@ export default function RootLayout() {
                 <Stack.Screen name="(Medicines)" options={{ headerShown: false }}/>
                 <Stack.Screen name="(Assistant)" options={{ headerShown:false }}/>
               </Stack>
-            </RouteGuard>
             </MedicineContextProvider>
             </RemindersContextProvider>
             </NotesProvider>
             </ProfileContextProvider>
+            </RouteGuard>
             </AuthProvider>  
   );
 }
