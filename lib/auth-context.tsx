@@ -1,6 +1,6 @@
-import { createContext, useContext, useEffect, useState } from "react"
-import { ID, Models} from "appwrite";
-import { account } from "./appwrite";
+import { ID, Models } from "appwrite";
+import { createContext, useContext, useEffect, useState } from "react";
+import { account } from "./appwriteConfig";
 
 
 type AuthContextType = {

@@ -1,10 +1,10 @@
-import { getNotes } from "@/lib/appwrite_queries";
 import { useRouter } from "expo-router";
 import { Pencil, Trash2 } from "lucide-react-native";
 import React, { useContext, useEffect } from "react";
 import { FlatList, TouchableOpacity, View } from "react-native";
 import { Button, Text } from "react-native-paper";
 import { NotesContext } from "./notesContext";
+import { getNotes } from "@/lib/Notes_DB/fetch_delete";
 
 export default function NotesList() {
     const { notes, setNotes }  = useContext(NotesContext);
