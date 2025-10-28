@@ -28,7 +28,7 @@ export default function Reminders() {
           <TouchableOpacity className="p-2 rounded-full bg-gray-100">
           <ArrowLeft onPress={(() => router.back())} size={22} color="black" />
           </TouchableOpacity>
-          <Text className="text-2xl font-bold text-blue-700">Medical Reminders</Text>
+          <Text className="text-xl font-bold text-blue-700">Medical Reminders</Text>
           <TouchableOpacity className="p-2 rounded-full bg-blue-500">
           <Plus onPress={(() => router.push({pathname: "./AddReminder"}))} size={22} color="white" />
           </TouchableOpacity>
