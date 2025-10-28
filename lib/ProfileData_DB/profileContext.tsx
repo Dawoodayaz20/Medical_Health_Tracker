@@ -15,12 +15,12 @@ type ProfileContextType = {
 
 
 export const ProfileContext = createContext<ProfileContextType>({
-    profile: {name:"", age: "", gender:"", email: ""},
+    profile: {docId: "", name: "", age: "", gender:"", email: ""},
     setProfile: () => {}
 })
 
 const ProfileContextProvider = ({children}: {children: ReactNode}) => {
-    const [profile, setProfile] = useState<Profile>({ name: "", age: "", gender: "", email: "" });
+    const [profile, setProfile] = useState<Profile>({ docId: "", name: "", age: "", gender: "", email: "" });
 
     return (
         <ProfileContext.Provider value={{profile, setProfile}}>

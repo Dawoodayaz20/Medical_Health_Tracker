@@ -12,3 +12,4 @@ export async function getAccountID () {
     const userId = accountInfo.$id
     return userId
 }
+

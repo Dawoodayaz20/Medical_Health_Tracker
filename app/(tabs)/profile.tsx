@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 import * as ImagePicker from 'expo-image-picker';
-import { storage } from "@/lib/appwriteConfig";
 import React, { useContext, useState } from "react";
 import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Button } from "react-native-paper";
@@ -9,7 +8,7 @@ import { ProfileContext } from "../../lib/ProfileData_DB/profileContext";
 import '../globals.css'
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { saveUserInfo, UpdateUserInfo, uploadProfileImage } from "@/lib/ProfileData_DB/SaveProfile";
+import { saveUserInfo, UpdateUserInfo } from "@/lib/ProfileData_DB/SaveProfile";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function LoginScreen() {
@@ -60,14 +59,17 @@ export default function LoginScreen() {
         }, [])
 
     const saveUserProfile = async () => {
-      const fileId = await uploadProfileImage(image);
-      await saveUserInfo(profile.name, profile.age, profile.gender, fileId ?? "")
+      try{
+        await saveUserInfo(profile.name, profile.age, profile.gender)
+      }
+      catch(error){
+        console.error("There was an error saving the info:", error)
+      }
     };
 
     const updateUserProfile = async () => {
       try{
-        const fileId = await uploadProfileImage(image);
-        await UpdateUserInfo(profile.docId, profile.name, profile.age, profile.gender, fileId ?? "")
+        await UpdateUserInfo(profile.docId, profile.name, profile.age, profile.gender)
       }
       catch(error){
         console.log("Error:", error);

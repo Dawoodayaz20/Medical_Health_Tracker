@@ -16,7 +16,6 @@ export default function Index() {
   const medicalRec = require('../../assets/images/medicalrecords.png');
   const medicalassist = require('../../assets/images/medicalassist.png');
   const medicines = require('../../assets/images/medicines.png');
-  const profilepic = require('../../assets/images/Zulkifl Profile1.jpg');
   const { profile, setProfile } = useContext(ProfileContext)
   const [ image, setImage ] = useState('')
 
