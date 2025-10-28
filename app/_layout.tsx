@@ -38,7 +38,7 @@ export default function RootLayout() {
               <Stack>
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }}/>
                 <Stack.Screen name="(reminders)" options={{ headerShown: false }}/>
-                <Stack.Screen name="(Records)" options={{ headerShown: true, title:'' }}/>
+                <Stack.Screen name="(Records)" options={{ headerShown: false }}/>
                 <Stack.Screen name="(Medicines)" options={{ headerShown: false }}/>
                 <Stack.Screen name="(Assistant)" options={{ headerShown:false }}/>
               </Stack>

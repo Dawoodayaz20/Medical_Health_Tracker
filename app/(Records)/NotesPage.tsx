@@ -1,8 +1,8 @@
 import { useRouter } from "expo-router";
-import { Pencil, Trash2 } from "lucide-react-native";
+import { Pencil, Trash2, ArrowLeft, Plus } from "lucide-react-native";
 import React, { useContext, useEffect } from "react";
-import { FlatList, TouchableOpacity, View } from "react-native";
-import { Button, Text } from "react-native-paper";
+import { FlatList, TouchableOpacity, View, Text } from "react-native";
+import { Button } from "react-native-paper";
 import { NotesContext } from "./notesContext";
 import { getNotes } from "@/lib/Notes_DB/fetch_delete";
 
@@ -30,17 +30,18 @@ export default function NotesList() {
     }, [])
 
     return(
-        <View className="flex-1 bg-blue-50 p-4">
-            <View className="flex-row justify-between items-center mb-6">
-            <Text className="text-2xl font-bold text-blue-700"> Medical Notes </Text>
-            <Button 
-                mode="contained" 
-                onPress={() => router.push({pathname: "./AddNote"})}
-                className="bg-blue-600 rounded-full">
-                +
-            </Button>
-            </View>
-            <FlatList 
+        <View className="flex-1 bg-blue-50 p-4 mt-2">
+        <View className="flex-row justify-between items-center mb-6">
+        <ArrowLeft onPress={(() => router.back())} size={22} color="black" />
+        <Text className="text-2xl font-bold text-blue-700">Medical Notes</Text>
+        <TouchableOpacity
+          onPress={() => router.push("/AddNote")}
+          className="bg-blue-600 p-2 rounded-full"
+        >
+          <Plus color="white" size={22} />
+        </TouchableOpacity>
+        </View>
+        <FlatList 
             data={notes}
             keyExtractor={(note) => note.id}
             renderItem={({item: note}) => (
