@@ -7,6 +7,7 @@ type Note = {
 }
 
 type Profile = {
+    docId: string
     name: string,
     age: string,
     gender: string
