@@ -12,15 +12,14 @@ export default function AddMedicine() {
   const [time, setTime] = useState("");
   const [ detail, setDetail] = useState("");
 
-//   const saveMedicine = async () => {
-//     if (!medicine.trim() || !illness.trim()) {
-//       alert("Please fill in all required fields.");
-//       return;
-//     }
-//     // Later we'll connect this to Appwrite database
-//     console.log({ medicine, illness, dosage, time });
-//     router.back();
-//   };
+  const saveMedicine = async () => {
+    try{
+      await SaveMedicines(name, illness, dosage, time, detail)
+    }
+    catch(error){
+      console.error("There was an error saving the Medicine:", error)
+    }
+  }
 
   return (
     <View>
@@ -32,6 +31,7 @@ export default function AddMedicine() {
       <View className="gap-4 flex">
         <TextInput
           placeholder="Medicine Name"
+          placeholderTextColor="#555"
           value={name}
           onChangeText={setName}
           className="bg-white p-4 rounded-xl border border-gray-200 text-gray-800"
@@ -39,6 +39,7 @@ export default function AddMedicine() {
 
         <TextInput
           placeholder="Illness (e.g. Fever, Headache)"
+          placeholderTextColor="#555"
           value={illness}
           onChangeText={setIllness}
           className="bg-white p-4 rounded-xl border border-gray-200 text-gray-800"
@@ -46,6 +47,7 @@ export default function AddMedicine() {
 
         <TextInput
           placeholder="Dosage (optional)"
+          placeholderTextColor="#555"
           value={dosage}
           onChangeText={setDosage}
           className="bg-white p-4 rounded-xl border border-gray-200 text-gray-800"
@@ -55,6 +57,7 @@ export default function AddMedicine() {
           <Clock size={18} color="#2563eb" />
           <TextInput
             placeholder="Time (e.g. 8:00 AM)"
+            placeholderTextColor="#555"
             value={time}
             onChangeText={setTime}
             className="ml-2 flex-1 text-gray-800"
@@ -63,6 +66,7 @@ export default function AddMedicine() {
         
         <TextInput
           placeholder="Notes (optional)"
+          placeholderTextColor="#555"
           value={detail}
           onChangeText={setDetail}
           className="bg-white p-4 rounded-xl border border-gray-200 text-gray-800"
@@ -70,7 +74,7 @@ export default function AddMedicine() {
       </View>
 
       <TouchableOpacity
-        onPressIn={(() => SaveMedicines(name, illness, dosage, time, detail))}
+        onPressIn={(() => saveMedicine())}
         onPress={(() => router.back())}
         className="bg-blue-600 p-4 rounded-xl mt-8 shadow-md"
       >

@@ -1,6 +1,5 @@
-import { ID } from "appwrite"
-import { account, databases, getAccountID } from "../appwrite"
 import { Query } from "appwrite";
+import { databases, getAccountID } from "../appwriteConfig";
 
 export async function fetchMedicines(): Promise<Medicines[] | null> {
     try{
@@ -10,7 +9,7 @@ export async function fetchMedicines(): Promise<Medicines[] | null> {
             }
 
         const response = await databases.listDocuments({
-            databaseId: process.env.EXPO_PUBLIC_APPWRITE_DOC_ID!,
+            databaseId: process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID!,
             collectionId: "medicines",
             queries: [Query.equal("userID", userID)]
         });
@@ -33,7 +32,7 @@ export async function fetchMedicines(): Promise<Medicines[] | null> {
 export async function DeleteMedicine(documentId: string) {
     try {
         await databases.deleteDocument(
-            process.env.EXPO_PUBLIC_APPWRITE_DOC_ID!,
+            process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID!,
             "medicines",
             documentId
         );
