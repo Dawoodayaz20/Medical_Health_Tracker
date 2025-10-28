@@ -4,8 +4,7 @@ import { View, StyleSheet, TouchableOpacity, ScrollView } from "react-native"
 import { RemindersContext } from "./remindersContext"
 import { Plus, ArrowLeft, Trash2, Pencil } from "lucide-react-native"
 import { useRouter } from "expo-router"
-import { getReminders } from "@/lib/Reminder_DB/SaveReminder"
-import { DeleteReminder } from "@/lib/Reminder_DB/fetchReminder"
+import { getReminders, DeleteReminder } from "@/lib/Reminder_DB/fetch_Delete"
 
 export default function Reminders() {
     const { reminder, setReminder } = useContext(RemindersContext)
