@@ -22,11 +22,11 @@ export default function MedicinesPage() {
     }, [])
 
   return (
-    <View className="flex-1 bg-blue-50 p-6">
+    <View className="flex-1 bg-blue-50 p-6 mt-6">
       {/* Header */}
       <View className="flex-row justify-between items-center mb-6">
         <ArrowLeft onPress={(() => router.back())} size={22} color="black" />
-        <Text className="text-2xl font-bold text-blue-700">Medicines</Text>
+        <Text className="text-xl font-bold text-blue-700">Medicines</Text>
         <TouchableOpacity
           onPress={() => router.push("/AddMedicines")}
           className="bg-blue-600 p-2 rounded-full"
