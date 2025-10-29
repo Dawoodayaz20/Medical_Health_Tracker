@@ -62,11 +62,12 @@ export default function AddReminder () {
       
       {/* Save Button */}
         <View className="items-center">
-            <Button 
+            <Button
+            style={{backgroundColor:"#2563eb"}} 
             mode="contained"
             onPressIn={(() => saveReminder(title, time, description))}
             onPress={(() => router.back())}
-            className="bg-blue-500 text-center py-2 rounded-2xl mt-8">
+            className="text-center py-2 rounded-2xl mt-8">
               Save Reminder
             </Button>
         </View>

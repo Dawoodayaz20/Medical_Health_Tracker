@@ -52,7 +52,7 @@ export default function MedicalAssistant() {
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={[styles.container, { paddingBottom: insets.bottom + 10 }]}
-      keyboardVerticalOffset={Platform.OS === "android" ? 90 : 60}
+      keyboardVerticalOffset={Platform.OS === "android" ? 50 : 60}
     >
       {/* Header gradient bar */}
       <LinearGradient
@@ -174,11 +174,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f1f5f9",
     borderRadius: 25,
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    fontSize: 15,
-    height: 80,
-    marginRight: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    fontSize: 14,
+    height: 50,
+    marginRight: 2,
   },
   sendButton: {
     backgroundColor: "#2563eb",
