@@ -4,14 +4,12 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { View } from "react-native";
 import { Button, Text, TextInput } from "react-native-paper";
 import { saveNoteToAppwrite } from "@/lib/Notes_DB/SaveNotes";
-import { getNotes } from "@/lib/appwrite_queries";
 
 export default function AddNote () {
     const { notes, setNotes } = useContext(NotesContext);
     const params = useLocalSearchParams()
     const [title, setTitle] = useState<any>(params.title || '')
     const [date, setDate] = useState<any>(params.date ||'')
-    const [details, setDetail] = useState<any>(params.details ||'')
     const [med_note, setNote] = useState<any>(params.med_note ||'')
 
     const router = useRouter()
