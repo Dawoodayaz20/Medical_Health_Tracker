@@ -15,8 +15,7 @@ export default function AddNote () {
     const router = useRouter()
 
     return(
-        // 
-        <KeyboardAvoidingView
+    <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >

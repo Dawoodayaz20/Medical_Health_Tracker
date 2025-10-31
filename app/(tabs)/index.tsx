@@ -8,7 +8,7 @@ import { Text } from 'react-native-paper';
 import { ProfileContext } from "../../lib/ProfileData_DB/profileContext";
 import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import '../globals.css'
+
 
 export default function Index() {
   

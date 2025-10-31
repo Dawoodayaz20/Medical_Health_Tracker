@@ -5,7 +5,6 @@ import ProfileContextProvider from "../lib/ProfileData_DB/profileContext";
 import NotesProvider from "./(Records)/notesContext";
 import RemindersContextProvider from "./(reminders)/remindersContext";
 import MedicineContextProvider from "./(Medicines)/medicinalContext";
-import './globals.css';
 
 function RouteGuard({children} : { children: React.ReactNode }){
 

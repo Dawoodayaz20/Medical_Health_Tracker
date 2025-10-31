@@ -5,7 +5,6 @@ import React, { useContext, useState } from "react";
 import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Button } from "react-native-paper";
 import { ProfileContext } from "../../lib/ProfileData_DB/profileContext";
-import '../globals.css'
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { saveUserInfo, UpdateUserInfo } from "@/lib/ProfileData_DB/SaveProfile";
@@ -24,7 +23,6 @@ export default function LoginScreen() {
             alert("Permission to access gallery is required!")
             return;
         }
-        
 
         //Open gallery
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -80,41 +78,37 @@ export default function LoginScreen() {
     return(
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1"
+      style={styles.container}
     >
-      <LinearGradient colors={["#E0EAFC", "#CFDEF3"]} className="flex-1">
-        <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
+      <LinearGradient colors={["#E0EAFC", "#CFDEF3"]} style={styles.gradient}>
+        <ScrollView contentContainerStyle={styles.scroll}>
           {/* Profile Picture */}
-          <View className="mt-20 items-center">
+          <View style={styles.imageContainer}>
             <TouchableOpacity onPress={pickImage} activeOpacity={0.8}>
-              <View className="relative">
-                <View className="rounded-full p-1 border-4 border-blue-500">
+              <View>
+                <View style={styles.imageWrapper}>
                   <Image
                     source={{ uri: image || "https://via.placeholder.com/150" }}
-                    className="w-36 h-36 rounded-full"
+                    style={styles.image}
                   />
                 </View>
-
-                {/* Camera Icon Overlay */}
-                <View className="absolute bottom-2 right-2 bg-blue-500 p-2 rounded-full">
+                <View style={styles.cameraIcon}>
                   <MaterialCommunityIcons name="camera" size={20} color="#fff" />
-                  </View>
                 </View>
-              </TouchableOpacity>
-            </View>
+              </View>
+            </TouchableOpacity>
+          </View>
 
-          {/* Personal Info Section */}
-          <View className="px-6 mt-10">
-            <Text className="text-2xl font-bold text-gray-800 mb-6 text-center">
-              Personal Information
-            </Text>
+          {/* Info Section */}
+          <View style={styles.infoContainer}>
+            <Text style={styles.title}>Personal Information</Text>
 
             <TextInput
               placeholder="Name"
               placeholderTextColor="#555"
               value={profile.name}
               onChangeText={(text) => setProfile({ ...profile, name: text })}
-              className="w-full p-3 border border-gray-300 rounded-2xl mb-4 bg-white"
+              style={styles.input}
             />
             <TextInput
               placeholder="Age in numbers"
@@ -122,45 +116,39 @@ export default function LoginScreen() {
               value={profile.age}
               onChangeText={(text) => setProfile({ ...profile, age: text })}
               keyboardType="numeric"
-              className="w-full p-3 border border-gray-300 rounded-2xl mb-4 bg-white"
+              style={styles.input}
             />
             <TextInput
               placeholder="Gender: Male / Female / Other"
               placeholderTextColor="#555"
               value={profile.gender}
               onChangeText={(text) => setProfile({ ...profile, gender: text })}
-              className="w-full p-3 border border-gray-300 rounded-2xl mb-4 bg-white"
+              style={styles.input}
             />
 
-            {/* <Text className="text-base text-gray-600 mb-6 text-center">
-              Email: {profile.email || "Not available"}
-            </Text> */}
-
-            {
-            profile.email
-              ?
-            <Button
-              mode="contained"
-              onPress={() => updateUserProfile() }
-              style={{ backgroundColor: "#1E90FF", marginVertical: 10 }}
-            >
-              Update Info
-            </Button>
-              :
-            <Button
-              mode="contained"
-              onPress={() => saveUserProfile() }
-              style={{ backgroundColor: "#1E90FF", marginVertical: 10 }}
-            >
-              Save Info
-            </Button>
-            }
+            {profile.email ? (
+              <Button
+                mode="contained"
+                onPress={updateUserProfile}
+                style={[styles.button, { backgroundColor: "#1E90FF" }]}
+              >
+                Update Info
+              </Button>
+            ) : (
+              <Button
+                mode="contained"
+                onPress={saveUserProfile}
+                style={[styles.button, { backgroundColor: "#1E90FF" }]}
+              >
+                Save Info
+              </Button>
+            )}
 
             <Button
               mode="contained"
               onPress={signOut}
-              style={{ backgroundColor: "black", marginTop: 30 }}
               icon="logout"
+              style={[styles.button, { backgroundColor: "black", marginTop: 30 }]}
             >
               Sign Out
             </Button>
@@ -170,3 +158,45 @@ export default function LoginScreen() {
     </KeyboardAvoidingView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1 },
+  gradient: { flex: 1 },
+  scroll: { paddingBottom: 100 },
+  imageContainer: { marginTop: 80, alignItems: "center" },
+  imageWrapper: {
+    borderWidth: 4,
+    borderColor: "#1E90FF",
+    borderRadius: 100,
+    padding: 3,
+  },
+  image: { width: 144, height: 144, borderRadius: 72 },
+  cameraIcon: {
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+    backgroundColor: "#1E90FF",
+    padding: 8,
+    borderRadius: 20,
+  },
+  infoContainer: { paddingHorizontal: 24, marginTop: 40 },
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#333",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  input: {
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 16,
+    padding: 12,
+    marginBottom: 14,
+  },
+  button: {
+    marginVertical: 10,
+    borderRadius: 12,
+  },
+});
