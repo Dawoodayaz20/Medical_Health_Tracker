@@ -45,7 +45,6 @@ export async function UpdateMedicalNote(
                 "medical_notes",
                 docId,
                 {
-                    userID: userAccount,
                     title,
                     date,
                     med_note

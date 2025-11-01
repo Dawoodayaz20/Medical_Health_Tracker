@@ -1,9 +1,11 @@
 import React, { useState, useContext } from "react";
 import { NotesContext } from "./notesContext";
+import { ArrowLeft } from "lucide-react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { saveNoteToAppwrite } from "@/lib/Notes_DB/SaveNotes";
+import { UpdateMedicalNote } from "@/lib/Notes_DB/SaveNotes";
 
 export default function AddNote () {
     const { notes, setNotes } = useContext(NotesContext);
@@ -11,8 +13,11 @@ export default function AddNote () {
     const [title, setTitle] = useState<any>(params.title || '')
     const [date, setDate] = useState<any>(params.date ||'')
     const [med_note, setNote] = useState<any>(params.med_note ||'')
+    const docId = params.id as any
+    
 
     const router = useRouter()
+    console.log("DocID:",docId)
 
     return(
     <KeyboardAvoidingView
@@ -22,18 +27,32 @@ export default function AddNote () {
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
+          <ArrowLeft onPress={() => router.back()} size={22} color="black" />
           <Text style={styles.headerTitle}>
             {params.id ? "Edit Note" : "New Note"}
           </Text>
-          <Button
+          {
+            params.id ?
+            <Button
+            mode="contained"
+            onPress={() => router.back()}
+            onPressIn={() => UpdateMedicalNote(docId, title, date, med_note)}
+            style={styles.saveButton}
+            labelStyle={styles.saveButtonLabel}
+          >
+            Update
+          </Button>
+          :
+            <Button
             mode="contained"
             onPress={() => router.back()}
             onPressIn={() => saveNoteToAppwrite(title, date, med_note)}
             style={styles.saveButton}
             labelStyle={styles.saveButtonLabel}
           >
-            {params.id ? "Update" : "Save"}
+            Save
           </Button>
+          }
         </View>
 
         {/* Input Fields */}

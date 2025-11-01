@@ -1,6 +1,6 @@
 type Note = {
     id: string,
-    userId: number,
+    userId: string,
     title: string,
     date: string,
     med_note: string
