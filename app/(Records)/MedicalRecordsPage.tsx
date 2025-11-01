@@ -1,28 +1,32 @@
-import { useRouter } from "expo-router";
+import { useRouter, useFocusEffect } from "expo-router";
 import { Pencil, Trash2, ArrowLeft, Plus } from "lucide-react-native";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useCallback } from "react";
 import { FlatList, TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import { Button } from "react-native-paper";
 import { NotesContext } from "./notesContext";
 import { getNotes } from "@/lib/Notes_DB/fetch_delete";
 
-export default function NotesList() {
+export default function MedicalRecords() {
     const { notes, setNotes }  = useContext(NotesContext);
     const router = useRouter();
 
-    useEffect(() => {
+    useFocusEffect(
+      useCallback(() => {
         const fetchNotes = async () => {
             const notesData = await getNotes()
             if(notesData){
-                    console.log(notesData)
-                    setNotes(notesData);
+              console.log("notesData:",notesData)
+              setNotes(notesData);
             }
             else {
                 console.log("There was an error fetching the notes!")
-            }
-        }
-        fetchNotes()
-    }, [])
+            };
+        };
+        fetchNotes();
+      }, [])
+    );
+
+    console.log(notes)
 
     return(
 
@@ -30,7 +34,7 @@ export default function NotesList() {
       {/* Header */}
       <View style={styles.header}>
         <ArrowLeft onPress={() => router.back()} size={22} color="black" />
-        <Text style={styles.headerTitle}>Medical Notes</Text>
+        <Text style={styles.headerTitle}>Medical Records</Text>
         <TouchableOpacity
           onPress={() => router.push("/AddNote")}
           style={styles.addButton}
@@ -58,7 +62,7 @@ export default function NotesList() {
                     router.push({
                       pathname: "./AddNote",
                       params: {
-                        id: note.userId,
+                        id: note.id,
                         title: note.title,
                         date: note.date,
                         med_note: note.med_note,
@@ -74,7 +78,7 @@ export default function NotesList() {
               </View>
             </View>
           </TouchableOpacity>
-        )}
+          )}
         ListEmptyComponent={
           <Text style={styles.emptyText}>No Notes Yet</Text>
         }
