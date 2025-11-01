@@ -24,7 +24,6 @@ export default function LoginScreen() {
             return;
         }
 
-        //Open gallery
         const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
@@ -33,10 +32,9 @@ export default function LoginScreen() {
     });
 
     if(!result.canceled) {
-        // setImage(result.assets[0].uri);
-        try {
-        await AsyncStorage.setItem("profileImage", result.assets[0].uri);
-        console.log("Image saved locally!");
+      try {
+      await AsyncStorage.setItem("profileImage", result.assets[0].uri);
+      console.log("Image saved locally!");
       } catch (error) {
         console.error("Error saving image locally:", error);
       }

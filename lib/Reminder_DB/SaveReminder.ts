@@ -27,3 +27,37 @@ export async function saveReminder (title: string, time: string, description: st
     }
 }
 
+export async function UpdateReminder(
+    docId: string,
+    title:string, 
+    time: string, 
+    description: string, 
+    ) 
+    {
+        const userAccount = await getAccountID()
+        if(userAccount){
+            try{
+                await databases.updateDocument(
+                process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID!,
+                "reminders",
+                docId,
+                {
+                    userID: userAccount,
+                    title,
+                    time,
+                    description
+                },  
+                [
+                `read("user:${userAccount}")`,
+                `write("user:${userAccount}")`
+                ],
+                )
+            }
+        catch(error){
+            console.log("There was an error saving the info:", error)
+        }
+        }
+        else{
+            alert("User must be logged in to save info!")
+        }
+}
