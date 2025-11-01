@@ -9,17 +9,6 @@ export default function Reminders() {
     const { reminder, setReminder } = useContext(RemindersContext)
     const router = useRouter()
 
-    // useEffect(() => {
-    //   const fetchReminders = async() => {
-    //     const reminders = await getReminders()
-    //     if(reminders){
-    //       console.log(reminders)
-    //       setReminder(reminders)
-    //     }
-    //   };
-    //   fetchReminders();
-    // }, [])
-
     useFocusEffect(
       useCallback(() => {
         const fetchReminders = async() => {
