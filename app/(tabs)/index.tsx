@@ -113,7 +113,7 @@ export default function Index() {
           {[
             { title: "Reminders", colors: ["#fb7185", "#f43f5e"], icon: reminder, links: "/(reminders)/reminderPage" },
             { title: "Medical Records", colors: ["#34d399", "#10b981"], icon: medicalRec, links: "/(Records)/MedicalRecordsPage" },
-            { title: "Medicines Info", colors: ["#38bdf8", "#0ea5e9"], icon: medicines, links: "/(Medicines)/MedicinesPage" },
+            { title: "Medicines", colors: ["#38bdf8", "#0ea5e9"], icon: medicines, links: "/(Medicines)/MedicinesPage" },
             { title: "Medical Assistant", colors: ["#38bdf8", "#0ea5e9"], icon: medicalassist, links: "/(Assistant)/MedicalAssistant" },
           ].map((card, i) => (
             <LinearGradient

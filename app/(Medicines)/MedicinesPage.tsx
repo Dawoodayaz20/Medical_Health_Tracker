@@ -1,7 +1,7 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useCallback } from "react";
 import { View, Text, TouchableOpacity, FlatList, StyleSheet } from "react-native";
 import { Plus, ArrowLeft, Trash2 } from "lucide-react-native";
-import { useRouter } from "expo-router";
+import { useRouter, useFocusEffect } from "expo-router";
 import { MedicineContext } from "./medicinalContext";
 import { fetchMedicines, DeleteMedicine } from "@/lib/Medicines_DB/fetchMedicines_DB";
 
@@ -9,17 +9,23 @@ export default function MedicinesPage() {
     const router = useRouter();
     const { medicine, setMedicine } = useContext(MedicineContext);
 
-    useEffect(() => {
-        const fetchMedicine = async() => {
+    useFocusEffect(
+      useCallback(() => {
+          const fetchMedicine = async() => {
+          try {
             const medicines = await fetchMedicines()
-            if(medicines){
-                console.log(medicines)
-                setMedicine(medicines)
-            };
-        };
-
+              if(medicines){
+                  console.log(medicines)
+                  setMedicine(medicines)
+              };
+            }
+          catch(error){
+          console.log("There was an error", error)
+          }};
+        
         fetchMedicine();
-    }, [])
+      }, [])
+    )
 
   return (
 //     <View className="flex-1 bg-blue-50 p-6 mt-6">
