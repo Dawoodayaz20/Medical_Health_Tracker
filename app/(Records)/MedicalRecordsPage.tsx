@@ -1,13 +1,19 @@
 import { useRouter, useFocusEffect } from "expo-router";
 import { Pencil, Trash2, ArrowLeft, Plus } from "lucide-react-native";
-import React, { useContext, useCallback } from "react";
-import { FlatList, TouchableOpacity, View, Text, StyleSheet } from "react-native";
-import { Button } from "react-native-paper";
+import React, { useContext, useCallback, useState } from "react";
+import { FlatList, TouchableOpacity, View, Text, StyleSheet, ScrollView, Image, Modal } from "react-native";
 import { NotesContext } from "./notesContext";
-import { getNotes } from "@/lib/Notes_DB/fetch_delete";
+import { getNotes, DeleteNote } from "@/lib/Notes_DB/fetch_delete";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 export default function MedicalRecords() {
     const { notes, setNotes }  = useContext(NotesContext);
+    const [medImages, setMedImages] = useState<Record<string, string[]>>({});
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [modalVisible, setModalVisible] = useState(false);
+
+
     const router = useRouter();
 
     useFocusEffect(
@@ -17,7 +23,20 @@ export default function MedicalRecords() {
             if(notesData){
               console.log("notesData:",notesData)
               setNotes(notesData);
-            }
+
+              const imagesMap : Record<string, string[]> = {};
+              
+              await Promise.all(
+              notesData.map(async (note) => {
+                const stored = await AsyncStorage.getItem(`noteImages-${note.id}`);
+                if (stored) {
+                  imagesMap[note.id] = JSON.parse(stored);
+                }
+                })
+              );
+
+              setMedImages(imagesMap);
+              }
             else {
                 console.log("There was an error fetching the notes!")
             };
@@ -26,10 +45,59 @@ export default function MedicalRecords() {
       }, [])
     );
 
-    console.log(notes)
+    const handleDeleteImage = async () => {
+      if (!selectedImage) return;
+
+      // Find which note this image belongs to
+      const noteId = Object.keys(medImages).find((id) =>
+        medImages[id]?.includes(selectedImage)
+      );
+
+      if (!noteId) return;
+
+      // Filter out the deleted image
+      try {
+        const updatedImages = medImages[noteId].filter((uri) => uri !== selectedImage);
+
+      // Update AsyncStorage
+      await AsyncStorage.setItem(`noteImages-${noteId}`, JSON.stringify(updatedImages));
+
+      // Update local state
+      setMedImages((prev) => ({
+        ...prev,
+        [noteId]: updatedImages,
+      }));
+
+      // Close modal
+      setModalVisible(false);
+      setSelectedImage(null);
+      }
+    catch(err){
+      console.log("There was an error deleting this image:", err)
+    }
+    };
+
+    // function for removing multiple images:
+    const deleteImages = async (noteId: string) => {
+      try {
+        await AsyncStorage.removeItem(`noteImages-${noteId}`);
+        console.log("🗑️ Deleted all images for note:", noteId);
+      } catch (err) {
+        console.log("Error deleting images:", err);
+      }
+    };
+
+    const handleDeleteNote = async( noteId:string ) => {
+          try{
+            await DeleteNote(noteId)
+            await deleteImages(noteId)
+          }
+          catch(err){
+            console.log("There was an error deleting the Note", err)
+          }
+    }
 
     return(
-
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
@@ -49,12 +117,33 @@ export default function MedicalRecords() {
         data={notes}
         keyExtractor={(note) => note.id}
         renderItem={({ item: note }) => (
-          <TouchableOpacity activeOpacity={0.7}>
+          
             <View style={styles.noteCard}>
               <View style={styles.noteContent}>
                 <Text style={styles.noteDate}>{note.date}</Text>
                 <Text style={styles.noteTitle}>{note.title}</Text>
                 <Text style={styles.noteText}>{note.med_note}</Text>
+
+                {medImages[note.id]?.length > 0 && (
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 8 }}>
+                    {medImages[note.id].map((uri: string, index: number) => (
+                      <TouchableOpacity
+                        key={index}
+                        onPress={() => {
+                          setSelectedImage(uri);
+                          setModalVisible(true);
+                        }}
+                      >
+                      <Image
+                        source={{ uri }}
+                        style={{ width: 80, height: 80, borderRadius: 8, marginRight: 8 }}
+                      />
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                  )}
+
+
               </View>
               <View style={styles.actions}>
                 <TouchableOpacity
@@ -72,12 +161,12 @@ export default function MedicalRecords() {
                 >
                   <Pencil size={20} color="#1E90FF" />
                 </TouchableOpacity>
-                <TouchableOpacity style={{ marginLeft: 16 }}>
+                <TouchableOpacity onPress={() => handleDeleteNote(note.id)} style={{ marginLeft: 16 }}>
                   <Trash2 size={20} color="#EF4444" />
                 </TouchableOpacity>
               </View>
             </View>
-          </TouchableOpacity>
+          
           )}
         ListEmptyComponent={
           <Text style={styles.emptyText}>No Notes Yet</Text>
@@ -85,6 +174,57 @@ export default function MedicalRecords() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 100 }}
       />
+
+      <Modal
+        visible={modalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: 'rgba(0,0,0,0.9)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          {selectedImage && (
+            <Image
+              source={{ uri: selectedImage }}
+              style={{ width: '90%', height: '70%', borderRadius: 12 }}
+              resizeMode="contain"
+            />
+          )}
+
+          <TouchableOpacity
+            onPress={() => setModalVisible(false)}
+            style={{
+              position: 'absolute',
+              top: 40,
+              right: 20,
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              padding: 8,
+              borderRadius: 50,
+            }}
+          >
+            <Text style={{ color: 'white', fontSize: 18 }}>✕</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={handleDeleteImage}
+            style={{
+              position: 'absolute',
+              bottom: 60,
+              backgroundColor: 'rgba(255,0,0,0.6)',
+              paddingVertical: 10,
+              paddingHorizontal: 20,
+              borderRadius: 10,
+            }}
+          >
+            <Text style={{ color: 'white', fontSize: 16, fontWeight: '600' }}>Delete Image</Text>
+          </TouchableOpacity>
+        </View>
+        </Modal>
     </View>
     )
 }
