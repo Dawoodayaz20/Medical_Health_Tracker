@@ -4,7 +4,7 @@ import { Stack } from "expo-router";
 export default function MedicalAgentLayout () {
     return (
     <Stack>
-        <Stack.Screen name="medicalassistant" options={
+        <Stack.Screen name="MedicalAssistant" options={
             { title: 'Medical Assistant',
               headerShown:true
             }
