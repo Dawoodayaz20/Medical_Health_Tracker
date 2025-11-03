@@ -28,6 +28,7 @@ export default function Reminders() {
     }, [])
     );
     
+    
     return (
       <View style={styles.container}>
       {/* Header */}

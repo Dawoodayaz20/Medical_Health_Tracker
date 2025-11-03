@@ -9,6 +9,16 @@ import { ProfileContext } from "../../lib/ProfileData_DB/profileContext";
 import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+    shouldShowBanner: true, 
+    shouldShowList: true,   
+  }),
+});
+
 
 export default function Index() {
   
@@ -20,6 +30,16 @@ export default function Index() {
   const [ image, setImage ] = useState('')
 
   const router = useRouter();
+
+  useEffect(() => {
+    const requestPermissions = async () => {
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status !== "granted") {
+        alert("Permission for notifications was not granted.");
+      }
+    };
+    requestPermissions();
+  }, []);
 
   // UseEffect for getting profile data:
   useEffect(() => {
