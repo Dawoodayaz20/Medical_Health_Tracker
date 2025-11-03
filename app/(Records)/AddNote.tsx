@@ -1,11 +1,14 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { NotesContext } from "./notesContext";
 import { ArrowLeft } from "lucide-react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
+import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Image, TouchableOpacity, Alert } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { saveNoteToAppwrite } from "@/lib/Notes_DB/SaveNotes";
 import { UpdateMedicalNote } from "@/lib/Notes_DB/SaveNotes";
+import * as ImagePicker from 'expo-image-picker';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 export default function AddNote () {
     const { notes, setNotes } = useContext(NotesContext);
@@ -13,11 +16,75 @@ export default function AddNote () {
     const [title, setTitle] = useState<any>(params.title || '')
     const [date, setDate] = useState<any>(params.date ||'')
     const [med_note, setNote] = useState<any>(params.med_note ||'')
+    const [image, setImage] = useState<string[]>([]);
     const docId = params.id as any
-    
-
     const router = useRouter()
-    console.log("DocID:",docId)
+
+    useEffect(() => {
+      const loadImages = async () => {
+        if (params.id) {
+          const stored = await AsyncStorage.getItem(`noteImages-${params.id}`);
+          if (stored) {
+            setImage(JSON.parse(stored));
+          }
+        }
+      };
+      loadImages();
+    }, [params.id]);
+
+    const pickImage = async () => {
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      if(!permissionResult.granted){
+          alert("Permission to access gallery is required!")
+          return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 4],
+      quality: 1,
+      });
+
+      if (!result.canceled){
+        const newUris = result.assets.map((asset) => asset.uri);
+        setImage((prev) => [...prev, ...newUris]);
+      }
+    };
+
+    const saveImageLocally = async (noteId: string, uri: string[]) => {
+      try {
+        await AsyncStorage.setItem(`noteImages-${noteId}`, JSON.stringify(uri));
+        console.log("✅ Saved images for", noteId, uri);
+      } catch (err) {
+        console.log("Error saving image:", err);
+      }
+    };
+
+
+    const handleSaveNote = async () => {
+      const newNote = await saveNoteToAppwrite(title, date, med_note)
+      if (newNote && newNote.$id) {
+        if (image.length > 0) {
+          await saveImageLocally(newNote.$id, image);
+        }
+        console.log("Note saved with ID:", newNote.$id);
+      }
+    }
+
+    const handleUpdateNote = async() => {
+      try {
+        const updatedNote = await UpdateMedicalNote(docId, title, date, med_note)
+        if (updatedNote){
+          await saveImageLocally(docId, image);
+          console.log("The image has been successfully saved!")
+        }
+      }
+      catch(error){
+        console.log("There was an error updating the Medical Record", error)
+      }
+    }
 
     return(
     <KeyboardAvoidingView
@@ -36,7 +103,7 @@ export default function AddNote () {
             <Button
             mode="contained"
             onPress={() => router.back()}
-            onPressIn={() => UpdateMedicalNote(docId, title, date, med_note)}
+            onPressIn={() => handleUpdateNote()}
             style={styles.saveButton}
             labelStyle={styles.saveButtonLabel}
           >
@@ -46,7 +113,7 @@ export default function AddNote () {
             <Button
             mode="contained"
             onPress={() => router.back()}
-            onPressIn={() => saveNoteToAppwrite(title, date, med_note)}
+            onPressIn={() => handleSaveNote()}
             style={styles.saveButton}
             labelStyle={styles.saveButtonLabel}
           >
@@ -80,9 +147,24 @@ export default function AddNote () {
             multiline
             style={[styles.textInput, styles.noteInput]}
           />
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+          <View style={styles.imageContainer}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {image.map((uri, index) => (
+                <Image
+                  key={index}
+                  source={{ uri }}
+                  style={styles.previewImage}
+                  resizeMode="cover"
+                />
+              ))}
+            </ScrollView>
+            <TouchableOpacity onPress={pickImage} style={styles.uploadButton}>
+              <Text style={styles.uploadText}>Attach Image (Optional)</Text>
+            </TouchableOpacity>
+          </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
   );
 }
 
@@ -127,4 +209,24 @@ const styles = StyleSheet.create({
     minHeight: 120,
     textAlignVertical: "top", // Ensures multiline text starts at the top on Android
   },
+  imageContainer: {
+  alignItems: "center",
+  marginTop: 16,
+},
+uploadButton: {
+  backgroundColor: "#E5E7EB",
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  borderRadius: 8,
+},
+uploadText: {
+  color: "#1E40AF",
+  fontWeight: "500",
+},
+previewImage: {
+  width: 120,
+  height: 120,
+  borderRadius: 10,
+  marginBottom: 10,
+}
 });
