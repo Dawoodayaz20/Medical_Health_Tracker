@@ -16,7 +16,6 @@ export default function Reminders() {
         {
           const reminders = await getReminders()
         if(reminders){
-          console.log(reminders)
           setReminder(reminders)
         }
         }

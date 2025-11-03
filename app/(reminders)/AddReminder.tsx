@@ -36,7 +36,6 @@ export default function AddReminder () {
       const hours = date.getHours().toString().padStart(2, "0");
       const minutes = date.getMinutes().toString().padStart(2, "0");
       const time = `${hours}:${minutes}`; // "08:30"
-      console.log(time)
       saveReminder(title, time, description);
     }
 
@@ -45,9 +44,6 @@ export default function AddReminder () {
       setShowPicker(false);
       setDate(currentDate);
     };
-
-    console.log(date.getMinutes())
-    console.log(date.getHours())
 
     return (
       <KeyboardAvoidingView
