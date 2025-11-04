@@ -6,7 +6,7 @@ import { Button } from "react-native-paper";
 import { ArrowLeft } from "lucide-react-native";
 import { saveReminder } from "@/lib/Reminder_DB/SaveReminder";
 import * as Notifications from "expo-notifications";
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 
 export default function AddReminder () {
     const { reminder, setReminder } = useContext(RemindersContext);
@@ -44,6 +44,30 @@ export default function AddReminder () {
       setShowPicker(false);
       setDate(currentDate);
     };
+
+    const openPicker = () => {
+      if (Platform.OS === "android"){
+      DateTimePickerAndroid.open({
+      value: date,
+      mode: "date",
+      onChange: (event, selectedDate) => {
+        if (selectedDate) {
+          // Then open the time picker
+          DateTimePickerAndroid.open({
+            value: selectedDate,
+            mode: "time",
+            is24Hour: false,
+            onChange: (event, selectedTime) => {
+              if (selectedTime) setDate(selectedTime);
+            },
+          });
+        }
+      },
+    });
+  } else {
+    setShowPicker(true);
+  }
+};
 
     return (
       <KeyboardAvoidingView
@@ -86,15 +110,18 @@ export default function AddReminder () {
             onChangeText={setTime}
           /> */}
           <Text style={styles.label}>Time</Text>
-          <TouchableOpacity onPress={() => setShowPicker(true)} style={styles.input}>
+          <TouchableOpacity onPress={openPicker} style={styles.input}>
             <Text>{date.toLocaleString()}</Text>
           </TouchableOpacity>
-          {showPicker && (
+          {Platform.OS === "ios" && showPicker && (
             <DateTimePicker
               value={date}
               mode="datetime"
-              display="default"
-              onChange={onChange}
+              display="spinner"
+              onChange={(event, selectedDate) => {
+                setShowPicker(false);
+                if (selectedDate) setDate(selectedDate)
+              }}
             />
             )}
         </View>
