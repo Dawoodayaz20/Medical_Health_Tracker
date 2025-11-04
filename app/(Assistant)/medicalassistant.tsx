@@ -22,28 +22,6 @@ export default function MedicalAssistant() {
 
   const handleSubmit = async () => {
     if (!text.trim()) return;
-  //   try {
-  //   const reply = await handleResponse(text);
-
-  //   const botReply =
-  //     typeof reply === "object" && reply?.error
-  //       ? `Error: ${reply.error}`
-  //       : reply || "Sorry, I couldn't process your request. Please try again later!.";
-
-  //   setMessages((prev) => [
-  //     ...prev,
-  //     { text, from: "user" },
-  //     { text: botReply, from: "bot" },
-  //   ]);
-  // } catch (error) {
-  //   setMessages((prev) => [
-  //     ...prev,
-  //     { text, from: "user" },
-  //     { text: "An unexpected error occurred. Please try again later.", from: "bot" },
-  //   ]);
-  // }
-
-  // setText("");
 
   const userMessage: { text: string; from: "user" | "bot" } = { text, from: "user" };
 const updatedMessages = [...messages, userMessage];
@@ -82,7 +60,7 @@ const updatedMessages = [...messages, userMessage];
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={[styles.container, { paddingBottom: insets.bottom + 10 }]}
+      style={[styles.container, { paddingBottom: insets.bottom + 50 }]}
       keyboardVerticalOffset={Platform.OS === "android" ? 50 : 60}
     >
       {/* Header gradient bar */}
