@@ -24,6 +24,6 @@ export default async function handleResponse (question: string) {
         }
     catch(error){
         console.log("Error calling agent:", error);
-        return { error: 'Network error. Please try again later.' };
+        return { error: 'There was an error connecting with the Medical Assistant.' };
     }
 }

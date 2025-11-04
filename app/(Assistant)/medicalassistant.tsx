@@ -22,28 +22,59 @@ export default function MedicalAssistant() {
 
   const handleSubmit = async () => {
     if (!text.trim()) return;
-    try {
-    const reply = await handleResponse(text);
+  //   try {
+  //   const reply = await handleResponse(text);
+
+  //   const botReply =
+  //     typeof reply === "object" && reply?.error
+  //       ? `Error: ${reply.error}`
+  //       : reply || "Sorry, I couldn't process your request. Please try again later!.";
+
+  //   setMessages((prev) => [
+  //     ...prev,
+  //     { text, from: "user" },
+  //     { text: botReply, from: "bot" },
+  //   ]);
+  // } catch (error) {
+  //   setMessages((prev) => [
+  //     ...prev,
+  //     { text, from: "user" },
+  //     { text: "An unexpected error occurred. Please try again later.", from: "bot" },
+  //   ]);
+  // }
+
+  // setText("");
+
+  const userMessage: { text: string; from: "user" | "bot" } = { text, from: "user" };
+const updatedMessages = [...messages, userMessage];
+
+  // ✅ Show the user message immediately
+  setMessages(updatedMessages);
+  setText("");
+
+  try {
+    // Combine entire conversation
+    const conversation = updatedMessages
+      .map(m => `${m.from === "user" ? "User" : "Assistant"}: ${m.text}`)
+      .join("\n");
+
+    // Send to backend
+    const reply = await handleResponse(conversation);
 
     const botReply =
       typeof reply === "object" && reply?.error
         ? `Error: ${reply.error}`
-        : reply || "Sorry, I couldn't process your request. Please try again later!.";
+        : reply || "Sorry, I couldn't process your request.";
 
-    setMessages((prev) => [
-      ...prev,
-      { text, from: "user" },
-      { text: botReply, from: "bot" },
-    ]);
+    // ✅ Then show bot reply when it arrives
+    setMessages(prev => [...prev, { text: botReply, from: "bot" }]);
   } catch (error) {
-    setMessages((prev) => [
+    setMessages(prev => [
       ...prev,
-      { text, from: "user" },
-      { text: "An unexpected error occurred. Please try again later.", from: "bot" },
+      { text: "Something went wrong.", from: "bot" },
     ]);
   }
 
-  setText("");
 };
 
 
