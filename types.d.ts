@@ -18,8 +18,10 @@ type Reminder = {
     id: string,
     userID: string,
     title: string,
-    time: number, 
-    description: string
+    description: string,
+    reminderId: any,
+    hour: number,
+    minute: number
 }
 
 type Medicines = {

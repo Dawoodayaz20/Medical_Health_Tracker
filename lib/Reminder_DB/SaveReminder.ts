@@ -1,7 +1,7 @@
 import { ID, Query } from "appwrite";
 import { databases, getAccountID } from "../appwriteConfig";
 
-export async function saveReminder (title: string, time: string, description: string) {
+export async function saveReminder (title: string, description: string, reminderId: any, hour: number, minute: number) {
     const userId = await getAccountID()
 
     try{
@@ -12,8 +12,10 @@ export async function saveReminder (title: string, time: string, description: st
         {
             userID: userId,
             title,
-            time,
-            description
+            description,
+            reminderId,
+            hour,
+            minute
         },  
         [
         `read("user:${userId}")`,

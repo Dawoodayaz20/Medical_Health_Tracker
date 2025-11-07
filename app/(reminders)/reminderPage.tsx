@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState, useCallback } from "react"
-import { View, StyleSheet, TouchableOpacity, ScrollView, Text, FlatList } from "react-native"
+import { View, StyleSheet, TouchableOpacity, ScrollView, Text, FlatList, Switch } from "react-native"
 import { RemindersContext } from "./remindersContext"
 import { Plus, ArrowLeft, Trash2, Pencil } from "lucide-react-native"
 import { useRouter, useFocusEffect } from "expo-router"
 import { getReminders, DeleteReminder } from "@/lib/Reminder_DB/fetch_Delete"
+import { cancelNotification } from "./notificationUtils"
 
 export default function Reminders() {
-    const { reminder, setReminder } = useContext(RemindersContext)
+    const { reminder, setReminder } = useContext(RemindersContext);
     const router = useRouter()
 
     useFocusEffect(
@@ -26,23 +27,23 @@ export default function Reminders() {
       fetchReminders();
     }, [])
     );
-    
+
+    console.log(reminder)
     
     return (
       <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.iconButton} onPress={() => router.back()}>
-          <ArrowLeft size={22} color="black" />
+          <ArrowLeft size={18} color="black" />
         </TouchableOpacity>
-
         <Text style={styles.headerTitle}>Medical Reminders</Text>
 
         <TouchableOpacity
           style={[styles.iconButton, styles.addButton]}
           onPress={() => router.push({ pathname: "./AddReminder" })}
         >
-          <Plus size={22} color="white" />
+          <Plus size={18} color="white" />
         </TouchableOpacity>
       </View>
 
@@ -54,7 +55,7 @@ export default function Reminders() {
           <View style={styles.reminderCard}>
             <View style={{ flex: 1 }}>
               <Text style={styles.reminderTitle}>{item.title}</Text>
-              <Text style={styles.reminderTime}>{item.time}</Text>
+              <Text style={styles.reminderTime}>{item.hour}:{item.minute}</Text>
             </View>
 
             <View style={styles.actions}>
@@ -65,8 +66,9 @@ export default function Reminders() {
                     params: {
                       id: item.id,
                       title: item.title,
-                      time: item.time,
                       description: item.description,
+                      hour: item.hour,
+                      minute: item.minute
                     },
                   })
                 }
@@ -74,7 +76,11 @@ export default function Reminders() {
                 <Pencil />
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => DeleteReminder(item.id)}>
+              <TouchableOpacity onPress={() => {
+                DeleteReminder(item.id)
+                cancelNotification(item.reminderId)
+                setReminder(prev => prev.filter(r => r.id !== item.id));
+              }}>
                 <Trash2 />
               </TouchableOpacity>
             </View>
@@ -90,7 +96,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#EFF6FF",
     paddingHorizontal: 16,
-    paddingTop: 48,
+    paddingTop: 58,
   },
   header: {
     flexDirection: "row",
@@ -107,7 +113,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#3B82F6",
   },
   headerTitle: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: "bold",
     color: "#1D4ED8",
   },
@@ -117,7 +123,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F9FAFB",
     paddingHorizontal: 16,
     paddingVertical: 12,
-    borderRadius: 16,
+    borderRadius: 18,
     marginBottom: 12,
     shadowColor: "#000",
     shadowOpacity: 0.1,

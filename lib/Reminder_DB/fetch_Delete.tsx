@@ -31,8 +31,10 @@ export async function getReminders(): Promise<Reminder[] | null> {
                 id: doc.$id,
                 userID: doc.userID,
                 title: doc.title,
-                time: doc.time,
                 description: doc.description,
+                reminderId: doc.reminderId,
+                hour: doc.hour,
+                minute: doc.minute
             }));
         }
     catch(err){

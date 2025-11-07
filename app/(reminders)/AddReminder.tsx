@@ -1,73 +1,62 @@
 import React, { useState, useContext } from "react";
 import { RemindersContext } from "./remindersContext";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { View, Text, TouchableOpacity, TextInput, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
+import { View, Text, TouchableOpacity, TextInput, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native'
 import { Button } from "react-native-paper";
 import { ArrowLeft } from "lucide-react-native";
 import { saveReminder } from "@/lib/Reminder_DB/SaveReminder";
-import * as Notifications from "expo-notifications";
-import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import { scheduleNotification } from "./notificationUtils";
 
 export default function AddReminder () {
     const { reminder, setReminder } = useContext(RemindersContext);
     const params = useLocalSearchParams();
     const [title, setTitle] = useState<any>(params.title || "")
-    // const [time, setTime] = useState<any>(params.time || "")
     const [description, setDescription] = useState<any>(params.description || "")
-    const [date, setDate] = useState(new Date());
-    const [showPicker, setShowPicker] = useState(false);
+    const [hour, setHour] = useState<number | undefined>(
+      params.hour ? Number(params.hour) : undefined
+    );
+    const [minute, setMinute] = useState<number | undefined>(
+      params.minute ? Number(params.hour) : undefined
+    );
     const router = useRouter();
 
-    const scheduleNotification = async (title: string, date: Date) => {
-      await Notifications.scheduleNotificationAsync({
-        content: {
-          title: "⏰ Reminder!",
-          body: title,
-          sound: true,
-        },
-        trigger: { 
-          type: Notifications.SchedulableTriggerInputTypes.DATE, // ✅ required
-          date: date,
-         },
-      });
-    };
-
-    const handleSaveReminder = async( title: string, date:any, description: string) => {
-      const hours = date.getHours().toString().padStart(2, "0");
-      const minutes = date.getMinutes().toString().padStart(2, "0");
-      const time = `${hours}:${minutes}`; // "08:30"
-      saveReminder(title, time, description);
+    const handleSaveReminder = async( title: string, description: string, hour: number, minute: number) => {
+      
+      if (hour == null || minute == null) {
+        Alert.alert("Please select a reminder time first");
+        return;
+      }
+      try{
+        console.log("Scheduling notification...");
+        const id = await scheduleNotification(title, description, hour, minute);
+        console.log("Notification scheduled:", id);
+        if(id){
+          await saveReminder(title, description, id, hour, minute);
+          console.log("Reminder saved!");
+          Alert.alert("✅ Reminder Saved", "Your reminder has been saved successfully!");
+        }
+        else{
+          Alert.alert("There was an error scheduling the reminder!")
+        }
+      } catch (err) {
+        console.log("There was an error saving the reminder!", err);
+      }
     }
 
-    const onChange = (event : any, selectedDate?: Date) => {
-      const currentDate = selectedDate || date;
-      setShowPicker(false);
-      setDate(currentDate);
-    };
-
-    const openPicker = () => {
-      if (Platform.OS === "android"){
+    const openTimePicker = () => {
       DateTimePickerAndroid.open({
-      value: date,
-      mode: "date",
-      onChange: (event, selectedDate) => {
-        if (selectedDate) {
-          // Then open the time picker
-          DateTimePickerAndroid.open({
-            value: selectedDate,
-            mode: "time",
-            is24Hour: false,
-            onChange: (event, selectedTime) => {
-              if (selectedTime) setDate(selectedTime);
-            },
-          });
-        }
-      },
-    });
-  } else {
-    setShowPicker(true);
-  }
-};
+        value: new Date(),
+        mode: "time",
+        is24Hour: false,
+        onChange: (event, selectedTime) => {
+          if (selectedTime) {
+            setHour(selectedTime.getHours());
+            setMinute(selectedTime.getMinutes());
+          }
+        },
+      });
+    };
 
     return (
       <KeyboardAvoidingView
@@ -102,28 +91,16 @@ export default function AddReminder () {
 
         {/* Time */}
         <View style={styles.fieldContainer}>
-          {/* <Text style={styles.label}>Time</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="e.g. 8:30 AM"
-            value={time}
-            onChangeText={setTime}
-          /> */}
           <Text style={styles.label}>Time</Text>
-          <TouchableOpacity onPress={openPicker} style={styles.input}>
-            <Text>{date.toLocaleString()}</Text>
+          <TouchableOpacity onPress={openTimePicker} style={styles.input}>
+            <Text>
+              {hour != null && minute != null
+                ? `${hour.toString().padStart(2, "0")}:${minute
+                    .toString()
+                    .padStart(2, "0")}`
+                : "Select Time"}
+            </Text>
           </TouchableOpacity>
-          {Platform.OS === "ios" && showPicker && (
-            <DateTimePicker
-              value={date}
-              mode="datetime"
-              display="spinner"
-              onChange={(event, selectedDate) => {
-                setShowPicker(false);
-                if (selectedDate) setDate(selectedDate)
-              }}
-            />
-            )}
         </View>
 
         {/* Notes */}
@@ -144,8 +121,7 @@ export default function AddReminder () {
             mode="contained"
             style={styles.button}
             onPress={() => {
-              handleSaveReminder(title, date, description);
-              scheduleNotification(title, date)
+              handleSaveReminder(title, description, hour!, minute!);
               router.back();
             }}
           >
