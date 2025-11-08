@@ -1,11 +1,18 @@
 import { ID, Query } from "appwrite";
 import { databases, getAccountID } from "../appwriteConfig";
 
-export async function saveReminder (title: string, description: string, reminderId: any, hour: number, minute: number) {
+export async function saveReminder 
+    (
+        title: string, 
+        description: string, 
+        reminderId: any, 
+        hour: number, 
+        minute: number
+    ) {
     const userId = await getAccountID()
 
     try{
-        await databases.createDocument(
+        const doc = await databases.createDocument(
         process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID!,
         "reminders",
          ID.unique(),
@@ -23,17 +30,21 @@ export async function saveReminder (title: string, description: string, reminder
         ],
     )
     console.log("Info saved successfully!")
+    return doc;
     }
     catch(error){
         console.log("There was an error saving the info:", error)
+        return error;
     }
 }
 
 export async function UpdateReminder(
     docId: string,
     title:string, 
-    time: string, 
-    description: string, 
+    description: string,
+    reminderId: string,
+    hour:number,
+    minute:number 
     ) 
     {
         const userAccount = await getAccountID()
@@ -46,8 +57,10 @@ export async function UpdateReminder(
                 {
                     userID: userAccount,
                     title,
-                    time,
-                    description
+                    description,
+                    reminderId,
+                    hour,
+                    minute
                 },  
                 [
                 `read("user:${userAccount}")`,
