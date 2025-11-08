@@ -1,5 +1,6 @@
 import * as Notifications from "expo-notifications"
 
+// This notification scheduling function is for IOS devices
 export const scheduleNotificationforIOS = async (title: string, body: string, hour: number, minute:number) => 
   {
       const id = await Notifications.scheduleNotificationAsync({
@@ -18,6 +19,7 @@ export const scheduleNotificationforIOS = async (title: string, body: string, ho
       return id;
     };
 
+// This notification scheduling function is for android devices
 export const scheduleNotification = async (
   title: string,
   body: string,
@@ -56,12 +58,12 @@ export const scheduleNotification = async (
 };
 
 
-export const cancelNotification = async (id:string) => {
+export const cancelNotification = async (id:string) :Promise<{ success: boolean, message: string }> => {
     try{
-      await Notifications.cancelScheduledNotificationAsync(id);
-      console.log("Your reminder notification has been cancelled")
+      const result = await Notifications.cancelScheduledNotificationAsync(id);
+      return { success: true, message: "Reminder cancelled successfully" };
     }
     catch(err){
-      console.log("There was an error cancelling your reminder notification", err)
+      return { success: false, message: "Error cancelling reminder" };
     }
 }
