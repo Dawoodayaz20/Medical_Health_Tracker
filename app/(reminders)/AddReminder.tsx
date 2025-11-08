@@ -4,9 +4,9 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { View, Text, TouchableOpacity, TextInput, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native'
 import { Button } from "react-native-paper";
 import { ArrowLeft } from "lucide-react-native";
-import { saveReminder } from "@/lib/Reminder_DB/SaveReminder";
+import { saveReminder, UpdateReminder } from "@/lib/Reminder_DB/SaveReminder";
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-import { scheduleNotification } from "./notificationUtils";
+import { scheduleNotification, cancelNotification } from "./notificationUtils";
 
 export default function AddReminder () {
     const { reminder, setReminder } = useContext(RemindersContext);
@@ -19,10 +19,11 @@ export default function AddReminder () {
     const [minute, setMinute] = useState<number | undefined>(
       params.minute ? Number(params.hour) : undefined
     );
+    const notifyID = params.reminderId as any
+    const remindId = params.id as any
     const router = useRouter();
 
     const handleSaveReminder = async( title: string, description: string, hour: number, minute: number) => {
-      
       if (hour == null || minute == null) {
         Alert.alert("Please select a reminder time first");
         return;
@@ -57,6 +58,22 @@ export default function AddReminder () {
         },
       });
     };
+
+    const handleUpdateReminder = async ( title : string, descript : string, hrs : number, mins : number) => {
+      try{
+        const result = await cancelNotification(notifyID)
+        if(result.success){
+          const reminderId = await scheduleNotification(title, descript, hrs, mins)
+          if(reminderId){
+            await UpdateReminder(remindId, title, descript, reminderId, hrs, mins)
+          }
+          Alert.alert("The reminder has been updated successfully!")
+        }
+      }
+       catch(err){
+        Alert.alert("There was an error:", `${err}`)
+       }
+    }
 
     return (
       <KeyboardAvoidingView
@@ -116,7 +133,22 @@ export default function AddReminder () {
         </View>
 
         {/* Save Button */}
+        { 
+        remindId ?
         <View style={styles.buttonContainer}>
+          <Button
+            mode="contained"
+            style={styles.button}
+            onPress={() => {
+              handleUpdateReminder(title, description, hour!, minute!);
+              router.back();
+            }}
+          >
+            Update Reminder
+          </Button>
+          </View>
+          :
+          <View style={styles.buttonContainer}>
           <Button
             mode="contained"
             style={styles.button}
@@ -127,7 +159,8 @@ export default function AddReminder () {
           >
             Save Reminder
           </Button>
-        </View>
+          </View>
+        }
       </ScrollView>
     </KeyboardAvoidingView>
   );
