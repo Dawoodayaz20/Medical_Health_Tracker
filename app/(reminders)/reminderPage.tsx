@@ -68,7 +68,8 @@ export default function Reminders() {
                       title: item.title,
                       description: item.description,
                       hour: item.hour,
-                      minute: item.minute
+                      minute: item.minute,
+                      reminderId: item.reminderId
                     },
                   })
                 }
