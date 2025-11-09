@@ -26,31 +26,31 @@ export const scheduleNotification = async (
   hour: number,
   minute: number
 ) => {
-  const now = new Date();
-  const target = new Date();
+  // const now = new Date();
+  // const target = new Date();
 
-  target.setHours(hour);
-  target.setMinutes(minute);
-  target.setSeconds(0);
+  // target.setHours(hour);
+  // target.setMinutes(minute);
+  // target.setSeconds(0);
 
-  // If the selected time has already passed today, schedule for tomorrow
-  if (target <= now) {
-    target.setDate(target.getDate() + 1);
-  }
+  // // If the selected time has already passed today, schedule for tomorrow
+  // if (target <= now) {
+  //   target.setDate(target.getDate() + 1);
+  // }
 
-  // Calculate seconds until the next trigger time
-  const seconds = Math.floor((target.getTime() - now.getTime()) / 1000);
+  // // Calculate seconds until the next trigger time
+  // const seconds = Math.floor((target.getTime() - now.getTime()) / 1000);
 
   const id = await Notifications.scheduleNotificationAsync({
     content: {
       title: `⏰ ${title}!`,
       body,
-      sound: true,
+      sound: true
     },
     trigger: {
-      type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-      seconds,
-      repeats: true, // repeats every same interval (24h effectively)
+      type: Notifications.SchedulableTriggerInputTypes.DAILY,
+      hour: hour,
+      minute : minute
     },
   });
 

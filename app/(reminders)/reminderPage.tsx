@@ -28,7 +28,7 @@ export default function Reminders() {
     }, [])
     );
 
-    console.log(reminder)
+    // console.log(reminder)
     
     return (
       <View style={styles.container}>
