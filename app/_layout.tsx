@@ -5,6 +5,7 @@ import ProfileContextProvider from "../lib/ProfileData_DB/profileContext";
 import NotesProvider from "./(Records)/notesContext";
 import RemindersContextProvider from "./(reminders)/remindersContext";
 import MedicineContextProvider from "./(Medicines)/medicinalContext";
+import { ChatProvider } from "./(Assistant)/assistantContext";
 
 function RouteGuard({children} : { children: React.ReactNode }){
 
@@ -30,6 +31,7 @@ export default function RootLayout() {
   return (
             <AuthProvider>
             <RouteGuard>
+            <ChatProvider>
             <ProfileContextProvider>
             <NotesProvider>
             <RemindersContextProvider> 
@@ -45,6 +47,7 @@ export default function RootLayout() {
             </RemindersContextProvider>
             </NotesProvider>
             </ProfileContextProvider>
+            </ChatProvider>
             </RouteGuard>
             </AuthProvider>  
   );

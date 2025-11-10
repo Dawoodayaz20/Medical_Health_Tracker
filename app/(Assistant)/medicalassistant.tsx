@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {  IconButton } from "react-native-paper";
 import {
   Text,
@@ -13,47 +13,50 @@ import {
 import handleResponse from '../../lib/agentauth';
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ChatContext } from "./assistantContext";
+import { useChatContext } from "./assistantContext";
 
 export default function MedicalAssistant() {
-  const [messages, setMessages] = useState<{ text: string; from: "user" | "bot" }[]>([]);
-  const [text, setText] = useState<string>("");
+  // const [messages, setMessages] = useState<{ text: string; from: "user" | "bot" }[]>([]);
+  // const [text, setText] = useState<string>("");
+  const { messages, text, setText, handleSubmit } = useChatContext();
   
   const insets = useSafeAreaInsets();
 
-  const handleSubmit = async () => {
-    if (!text.trim()) return;
+//   const handleSubmit = async () => {
+//     if (!text.trim()) return;
 
-  const userMessage: { text: string; from: "user" | "bot" } = { text, from: "user" };
-const updatedMessages = [...messages, userMessage];
+//   const userMessage: { text: string; from: "user" | "bot" } = { text, from: "user" };
+//   const updatedMessages = [...messages, userMessage];
 
-  // ✅ Show the user message immediately
-  setMessages(updatedMessages);
-  setText("");
+//   // ✅ Show the user message immediately
+//   setMessages(updatedMessages);
+//   setText("");
 
-  try {
-    // Combine entire conversation
-    const conversation = updatedMessages
-      .map(m => `${m.from === "user" ? "User" : "Assistant"}: ${m.text}`)
-      .join("\n");
+//   try {
+//     // Combine entire conversation
+//     const conversation = updatedMessages
+//       .map(m => `${m.from === "user" ? "User" : "Assistant"}: ${m.text}`)
+//       .join("\n");
 
-    // Send to backend
-    const reply = await handleResponse(conversation);
+//     // Send to backend
+//     const reply = await handleResponse(conversation);
 
-    const botReply =
-      typeof reply === "object" && reply?.error
-        ? `Error: ${reply.error}`
-        : reply || "Sorry, I couldn't process your request.";
+//     const botReply =
+//       typeof reply === "object" && reply?.error
+//         ? `Error: ${reply.error}`
+//         : reply || "Sorry, I couldn't process your request.";
 
-    // ✅ Then show bot reply when it arrives
-    setMessages(prev => [...prev, { text: botReply, from: "bot" }]);
-  } catch (error) {
-    setMessages(prev => [
-      ...prev,
-      { text: "Something went wrong.", from: "bot" },
-    ]);
-  }
+//     // ✅ Then show bot reply when it arrives
+//     setMessages(prev => [...prev, { text: botReply, from: "bot" }]);
+//   } catch (error) {
+//     setMessages(prev => [
+//       ...prev,
+//       { text: "Something went wrong.", from: "bot" },
+//     ]);
+//   }
 
-};
+// };
 
 
   return (
