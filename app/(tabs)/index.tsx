@@ -171,7 +171,9 @@ export default function Index() {
       </ScrollView>
 
       {/* Floating Button */}
-      <TouchableOpacity style={styles.fab}>
+      <TouchableOpacity style={styles.fab}
+      onPress={(() => router.push('/(Assistant)/MedicalAssistant'))}
+      >
         <Text style={styles.fabIcon}>🤖</Text>
       </TouchableOpacity>
     </SafeAreaView>
